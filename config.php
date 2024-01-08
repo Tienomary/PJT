@@ -4,6 +4,7 @@ ini_set("display_errors", 1);
 //dependances
 
 require './class/database.php';
+require './class/user.php';
 
 //Connection à la bdd
 
