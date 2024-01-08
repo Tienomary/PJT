@@ -10,9 +10,10 @@ require './class/database.php';
 $db_table = 'pjt';
 $db_host = 'localhost';
 $db_user = 'root';
-$db_pass = '';
+$db_pass = 'root';
 $bdd = new pjt\database($db_table,$db_user,$db_pass,$db_host);
 
+//global VAR 
 $appName = 'Projet PJT';
 
 ?>
