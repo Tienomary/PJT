@@ -1,2 +1,6 @@
 cd docker-php-sample/
-docker compose up --build
+
+docker compose watch
+
+
+ou  docker compose up --build

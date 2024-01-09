@@ -1,0 +1,17 @@
+{
+    "name": "etiennemary/pjt",
+    "autoload": {
+        "psr-4": {
+            "Etiennemary\\Pjt\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Tienomary",
+            "email": "37733721+Tienomary@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "altorouter/altorouter": "^2.0"
+    }
+}
