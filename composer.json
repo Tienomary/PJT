@@ -11,5 +11,7 @@
             "email": "37733721+Tienomary@users.noreply.github.com"
         }
     ],
-    "require": {}
+    "require": {
+        "altorouter/altorouter": "^2.0"
+    }
 }

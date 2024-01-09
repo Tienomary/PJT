@@ -3,7 +3,7 @@ namespace pjt;
 class user{
     private $id;
     private $bdd;
-
+    
     public function __construct($id, $bdd){
         $this->id = $id;
         $this->bdd = $bdd;
