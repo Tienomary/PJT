@@ -12,14 +12,9 @@ class user{
      * update l'info du user
      */
     public function updateUserInformation($column, $value){
-        $listOfEditableColumn = ['firstname', 'lastname', 'email', 'password', 'codepostal', 'phonenumber'];
-        if(in_array($column, $this->listOfEditableColumn)){
-            $req = $this->bdd->queryExec("UPDATE users SET $column = ? WHERE id = ?", array($value,$this->id));
-            if($req){
-                return true;
-            }else{
-                return false;
-            }
+        $req = $this->bdd->queryExec("UPDATE users SET $column = ? WHERE id = ?", array($value,$this->id));
+        if($req){
+            return true;
         }else{
             return false;
         }
@@ -51,9 +46,23 @@ class user{
     /**
      * renvoie le mail du user
     **/
+    public function getUserPhoneNumber(){
+        $req = $this->bdd->queryReturn("SELECT * FROM users WHERE id = ?", array($this->id));
+        return $req[0]->phonenumber;
+    }
+    /**
+     * renvoie le password du user
+    **/
     public function getUserPassword(){
         $req = $this->bdd->queryReturn("SELECT * FROM users WHERE id = ?", array($this->id));
         return $req[0]->password;
+    }
+    /**
+     * renvoie le codepostal du user
+    **/
+    public function getUserCodePostal(){
+        $req = $this->bdd->queryReturn("SELECT * FROM users WHERE id = ?", array($this->id));
+        return $req[0]->codepostal;
     }
 }
 

@@ -31,31 +31,53 @@
     <div class="container align-center">
         <div class="row">
             <div class='col-lg-6 col-md-9 col-xs-12' style="margin-left: auto; margin-right: auto;">
+                <?php 
+                if(isset($_GET['e'])):
+                ?>
+                <div class="alert alert-danger"><?= $_GET['e'] ?></div>
+                <?php
+                endif;
+                ?>
                 <h2>Inscription</h2>
-                <form>
+                <form action="/inscription" method="POST" >
                     <div class="mb-3">
                         <label for="mail" class="form-label">Adresse email</label>
-                        <input type="email" class="form-control" id="mail" aria-describedby="emailHelp">
+                        <input type="email" class="form-control" id="mail" name="mail" aria-describedby="emailHelp" required>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Mot de passe</label>
-                        <input type="password" class="form-control" id="password">
+                        <label for="mail" class="form-label">Mot de passe</label>
+                        <input type="password" class="form-control" id="mail" name="password" aria-describedby="emailHelp" required>
                     </div>
                     <div class="row">
                         <div class="col">
                             <div class="mb-3">
                                 <label for="prenom" class="form-label">Prenom</label>
-                                <input type="text" class="form-control" id="prenom">
+                                <input type="text" class="form-control" id="prenom" name="prenom" required>
                             </div>
                         </div>
                         <div class="col">
                             <div class="mb-3">
-                                <label for="prenom" class="form-label">Nom</label>
-                                <input type="text" class="form-control" id="nom">
+                                <label for="nom" class="form-label">Nom</label>
+                                <input type="text" class="form-control" id="nom" name="nom" required>
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Je m'inscris</button>
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="codepostal" class="form-label">Code Postal</label>
+                                <input type="text" class="form-control" id="codepostal" name="codepostal" required>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="phonenumber" class="form-label">Numéro de tel :</label>
+                                <input type="text" class="form-control" id="phonenumber" name="phonenumber" required>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="./" class="btn btn-warning">Retour</a>
+                    <button type="submit" class="btn btn-success">Je m'inscris</button>
                 </form>
             </div>
         </div>

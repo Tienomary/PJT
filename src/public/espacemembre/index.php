@@ -19,7 +19,13 @@
                   <a class="nav-link active" aria-current="page" href="../">Accueil</a>
               </li>
           </ul>
-          <a class="btn btn-primary" href="./">Profil</a>
+          <?php 
+          if(isset($_SESSION['id'])){
+            ?>
+            <a href="./deconnexion" class="btn btn-danger" style="margin-left: 10px;">Me déconnecter</a>
+            <?php
+          }
+          ?>
           </div>
       </div>
     </nav>

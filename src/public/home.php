@@ -26,10 +26,15 @@
           <div class="sidebar-sticky"  style="position: fixed;">
             <h3><?= $appName ?></h3>
             <ul class="nav flex-column">
+                <p>Choisissez un tag  :</p>
                 <li class="nav-item">
-                    <a class="nav-link <?php if(isset($_GET['tags'])): echo 'active'; endif; ?>" href="#">
-                      Tag 1
+                    <?php 
+                    foreach($bdd->queryReturn('SELECT * FROM tags') as $tag){
+                    ?>
+                    <a class="nav-link <?php if(isset($_GET['tags']) && $_GET['tags'] == $tag->id): echo 'active'; endif; ?>" href="./?tags=<?= $tag->id ?>">
+                      <?= $tag->name ?>
                     </a>
+                    <?php } ?>
                 </li>
             </ul>
         </div>
@@ -54,17 +59,31 @@
           <div class="container" style="padding-top: 20px;">
             <h2>Regardes les dernières annonces publiées sur notre site <?= $appName ?></h2>
             <div class="row">
-                <?php for($i=0; $i<20; $i++){ ?>
+              <?php 
+              if(isset($_GET['tags'])){
+                $req = $bdd->queryReturn('SELECT * FROM articles WHERE tagid = ?', array($_GET['tags']));
+              }else{
+                $req = $bdd->queryReturn('SELECT * FROM articles');
+              }
+              foreach($req as $article){ 
+              ?>
               <div class="col-lg-4 col-md-6 col-xs-12" style="padding: 10px;">
-                <div class="card">
-                  <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                  </div>
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                        <img src="./uploads/<?= $article->image ?>" class="img-fluid rounded-start" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                        <div class="card-body">
+                          <h5 class="card-title"><?= $article->name ?></h5>
+                          <p class="card-text"><?= substr($article->description,0, 20) ?>...</p>
+                          <a href="./product-<?= $article->id ?>" class="btn btn-primary">Voir +</a>
+                        </div>
+                        </div>
+                    </div>
                 </div>
               </div>
-                <?php } ?>
+              <?php } ?>
             </div>
           </div>
         </main>
