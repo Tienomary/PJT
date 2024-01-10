@@ -3,7 +3,7 @@
 namespace pjt;
 class Annonce{
 
-    private $id;
+    public $id;
     private $bdd;
 
     public $nom;

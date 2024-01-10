@@ -1,5 +1,9 @@
 <?php 
 if(isset($_SESSION['id'])):
+    if(isset($_GET['unbooked'])){
+        $bdd->queryExec('DELETE FROM reservations WHERE id = ?', array($_GET['unbooked']));
+        header('Location: ./?s=Vous avez bien annulé votre reservation');
+    }
 $user = new pjt\user($_SESSION['id'], $bdd);
 $prenom = 'etienne';
 ?>
@@ -110,6 +114,59 @@ $prenom = 'etienne';
                                     </div>
                                 </div>
                             <?php
+                            }
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="row">
+                        <?php
+                        $myAnnonceNumber = $bdd->queryCount("SELECT * FROM reservations WHERE iduser = ?", array($_SESSION['id']));
+                        if($myAnnonceNumber == 0){
+                            echo ('<h5>Il semblerait que vous n\'ayez rien reservé pour le moment !</h5>');
+                        }else{
+                            echo ('<h5>Vos réservations : </h5>');
+                            $reqs = $bdd->queryReturn("SELECT * FROM reservations WHERE iduser = ? ORDER BY date ASC", array($_SESSION['id']));
+                            $reservations = array();
+                            foreach($reqs as $req){
+                                if(!empty($reservations[$req->idarticle])){
+                                    $reservations[$req->idarticle][sizeof($reservations[$req->idarticle])] = $req->date;
+                                }else{
+                                    $reservations[$req->idarticle] = array($req->idarticle,$req->date);
+                                }
+                            }
+                            foreach($reservations as $reservation){
+                                $annonce = new pjt\annonce($reservation[0], $bdd);
+                                $CreatorOfAnnonce = new pjt\user($annonce->posterid, $bdd);
+
+                                ?>
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="card mb-3" style="max-width: 540px;">
+                                        <div class="row g-0">
+                                            <div class="col-md-8">
+                                            <div class="card-body">
+                                            <h5 class="card-title"><?= $annonce->nom ?> <span class="badge bg-secondary"><?= $CreatorOfAnnonce->getUserPhoneNumber() ?></span></h5>
+                                            <p>
+                                                <?php 
+                                                for($i = 1; $i < sizeof($reservation); $i++){
+                                                    $req = $bdd->queryReturn('SELECT * FROM reservations WHERE iduser = ? AND idarticle = ? AND date = ?', array($_SESSION['id'], $reservation[0], $reservation[$i]));
+                                                    $reservationid = $req[0]->id;
+
+                                                    echo $reservation[$i].' <a class="badge rounded-pill text-bg-danger" href="./?unbooked='.$reservationid.'">Annuler</a><br>';
+                                                }
+                                                ?>
+                                                <u>Total de : <?php echo($annonce->prix * sizeof($reservation)-1); ?>€</u>
+                                            </p>
+                                            <a href="../product-<?= $annonce->id ?>" class="btn btn-primary">Voir l'article</a>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
                             }
                         }
                         ?>

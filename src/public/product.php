@@ -13,6 +13,33 @@ if(isset($match['params']['id'])){
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= $appName ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .header {
+            background-color: #f2f2f2;
+        }
+        .day-cell {
+            height: 100px;
+            padding: 0;
+        }
+        .day-cell button {
+            width: 100%;
+            height: 100%;
+            background-color: transparent; 
+            border: none;
+        }
+        .day-cell button:focus {
+            outline: none;
+        }
+        .day-cell.selected-day, .day-cell.selected-day button {
+            background-color: #298a13; 
+            color: white;
+        }
+        .booked {
+            background-color: #d3d3d3; 
+            pointer-events: none;      
+        }
+    </style>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -140,7 +167,142 @@ if(isset($match['params']['id'])){
             <div class="card-body">
               <?php 
               if(isset($_SESSION['id'])){
+                function build_calendar($month, $year, $id, $stockedDates) {
+                  function getMonthName($month) {
+                    $dateObj = DateTime::createFromFormat('!m', $month);
+                    return $dateObj->format('F'); 
+                  }
+                  $daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+                  $firstDayOfMonth = mktime(0, 0, 0, $month, 1, $year);
+                  $numberDays = date('t', $firstDayOfMonth);
+                  $dateComponents = getdate($firstDayOfMonth);
+                  $monthName = getMonthName($month);
+                  $dayOfWeek = $dateComponents['wday'];
+  
+                  $calendar = "<table class='table table-bordered'>";
+                  $calendar .= "<caption>$monthName $year</caption>";
+                  $calendar .= "<tr>";
+  
+                  foreach($daysOfWeek as $day) {
+                      $calendar .= "<th class='header'>$day</th>";
+                  }
+                  $calendar .= "</tr><tr>";
+                  $previous_month = $month == 1 ? 12 : $month - 1;
+                  $previous_year = $month == 1 ? $year - 1 : $year;
+                  $next_month = $month == 12 ? 1 : $month + 1;
+                  $next_year = $month == 12 ? $year + 1 : $year;
+  
+                  if ($dayOfWeek > 0) { 
+                    for($k = 0; $k < $dayOfWeek; $k++){ 
+                        $calendar .= "<td class='empty'></td>"; 
+                    } 
+                  }
 
+                  $bookedDatesFormatted = array_map(function($date) {
+                    return date('Y-m-d', strtotime($date));
+                  }, $stockedDates);
+  
+                  $currentDay = 1;
+                  while ($currentDay <= $numberDays) {
+                    if ($dayOfWeek == 0) { 
+                      $calendar .= "<tr>"; 
+                    }
+                    //$calendar .= "<td class='day-cell' id='day-$currentDay'><button onclick='dayClicked(this.parentElement, $currentDay, \"$month\", \"$year\")'>$currentDay</button></td>";
+                    
+                    //is booked ?
+                    $formattedDate = date('Y-m-d', strtotime("$year-$month-$currentDay"));
+                    $isBooked = in_array($formattedDate, $bookedDatesFormatted);
+                    $calendar .= "<td class='day-cell".($isBooked ? " booked" : "")."' id='day-$currentDay'>";
+                    if (!$isBooked) {
+                        $calendar .= "<button onclick='dayClicked(this.parentElement, $currentDay, \"$month\", \"$year\")'>$currentDay</button>";
+                    } else {
+                        $calendar .= "<center style='color: red;'>$currentDay</center>"; // Afficher le numéro du jour sans bouton
+                    }
+                    $calendar .= "</td>";
+                    // 
+
+                    if ($dayOfWeek == 6) {
+                      $calendar .= "</tr>";
+                      $dayOfWeek = -1;
+                    }
+                    $dayOfWeek++; 
+                    $currentDay++;
+                  }
+                  if ($dayOfWeek != 0) { 
+                    while ($dayOfWeek <= 6) { 
+                      $calendar .= "<td class='empty'></td>"; 
+                      $dayOfWeek++; 
+                    } 
+                  }
+                  $calendar .= "</tr>";
+
+  
+                  $calendar .= "<center><div class='calendar-navigation mb-3'>";
+                  $calendar .= "<a href='./product-".$id."?month=$previous_month&year=$previous_year&book=1' class='btn btn-primary'>&lt; Précédent</a>";
+                  $calendar .= "<a href='./product-".$id."?month=$next_month&year=$next_year&book=1' class='btn btn-primary' style='margin-left: 10px;'>Suivant &gt;</a>";
+                  $calendar .= "</div></center>";
+
+                  $calendar .= "</table>";
+                  return $calendar;
+              }
+              ?>
+              <div class="container">
+                <div id="calendar-container">
+                    <?php
+                    $stockedDates = array();
+                    foreach($bdd->queryReturn('SELECT * FROM reservations WHERE idarticle = ?', array($id)) as $date){
+                      $stockedDates[sizeof($stockedDates)] = $date->date;
+                    }
+                    $month = isset($_GET['month']) ? $_GET['month'] : date('m');
+                    $year = isset($_GET['year']) ? $_GET['year'] : date('Y');
+
+                    echo build_calendar($month, $year,$id, $stockedDates);
+                    ?>
+                </div>
+                <form id="selectedDatesForm" action="/book?id=<?= $id ?>&myid=<?= $_SESSION['id'] ?>" method="post">
+                    <input type="hidden" name="selectedDates" id="selectedDates" value="">
+                    <button type="submit" class="btn btn-success">Valider ma reservation !</button>
+                </form>
+              </div>
+
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const calendarContainer = document.getElementById('calendar-container');
+                    calendarContainer.addEventListener('click', function(event) {
+                        if (event.target.tagName === 'BUTTON') {
+                            var dayCell = event.target.parentElement; // Get the parent td of the button
+                            dayCell.classList.toggle('selected-day'); // Toggle the class on td, not button
+                        }
+                    });
+                });
+                var selectedDates = []; // Tableau pour stocker les dates sélectionnées
+
+                function dayClicked(dayElement, dayNumber, month, year) {
+                    dayElement.classList.toggle('selected-day');
+                    var date = year + '-' + month + '-' + dayNumber;
+                    if (dayElement.classList.contains('selected-day')) {
+                        selectedDates.push(date); // Ajouter la date au tableau
+                    } else {
+                        selectedDates = selectedDates.filter(function(d) { return d !== date; }); // Retirer la date
+                    }
+                    document.getElementById('selectedDates').value = selectedDates.join(','); // Joindre le tableau pour le formulaire
+                  }
+
+                  document.addEventListener('DOMContentLoaded', function() {
+                      const calendarContainer = document.getElementById('calendar-container');
+                      calendarContainer.addEventListener('click', function(event) {
+                          if (event.target.tagName === 'BUTTON') {
+                              var dayCell = event.target.parentElement;
+                              var dayNumber = event.target.textContent; // Obtenez le numéro du jour
+                              dayClicked(dayCell, dayNumber, '<?php echo $month; ?>', '<?php echo $year; ?>');
+                          }
+                      });
+                  });
+                </script>
+                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+              <?php
               }else{
               ?>
               <div class="alert alert-danger">

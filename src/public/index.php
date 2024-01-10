@@ -17,6 +17,7 @@ $router->map('POST', '/inscription', 'inscription');
 $router->map('POST', '/profilupdate', 'profilupdate');
 $router->map('POST', '/createtheproduct', 'createtheproduct');
 $router->map('POST', '/updatetheproduct', 'updatetheproduct');
+$router->map('POST', '/book', 'book');
 
 
 $match = $router->match();
@@ -198,6 +199,23 @@ switch ($match['target']){
             }
         }
         header('Location: ./product-'.$id.'?s=Votre annonce à bien été modifiée');
+    break;
+    case 'book':
+        $var = $_POST;
+        if (isset($var['selectedDates'])) {
+            $selectedDates = explode(',', $_POST['selectedDates']);
+            $selectedDatesVerify = array();
+            foreach($selectedDates as $date){
+                if(!in_array($date, $selectedDatesVerify)){
+                    $selectedDatesVerify[sizeof($selectedDatesVerify)] = $date;
+                }
+            }
+            foreach($selectedDatesVerify as $date){
+                $bdd->queryExec("INSERT INTO reservations(idarticle, iduser, date) VALUES (?,?,?)", array($_GET['id'], $_SESSION['id'], $date));
+            }
+            header('Location: ./product-'.$_GET['id'].'?s=Vous avez bien reservé votre location !');
+            var_dump($selectedDatesVerify);
+        }
         break;
     default: 
         require "./{$match['target']}.php";
