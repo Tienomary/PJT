@@ -29,6 +29,11 @@
                 <p>Choisissez un tag  :</p>
                 <li class="nav-item">
                     <?php 
+                    if(isset($_GET['tags'])){
+                    ?>
+                    <center><a class="btn btn-danger align-center" href="./" style="width: 100%;">Supprimer le tag</a></center>
+                    <?php
+                    }
                     foreach($bdd->queryReturn('SELECT * FROM tags') as $tag){
                     ?>
                     <a class="nav-link <?php if(isset($_GET['tags']) && $_GET['tags'] == $tag->id): echo 'active'; endif; ?>" href="./?tags=<?= $tag->id ?>">
@@ -57,6 +62,9 @@
             </div>
           </nav>
           <div class="container" style="padding-top: 20px;">
+            <div class="alert alert-warning">
+            Bienvenue sur LocalRent - la plateforme de location entre particuliers qui allie praticité, économie et respect de l'environnement. Louez des objets de qualité directement auprès de votre communauté, réduisez votre empreinte carbone et contribuez à un mode de vie plus durable. Découvrez le pouvoir du partage sur LocalRent - louez intelligemment, vivez durablement.
+            </div>
             <h2>Regardes les dernières annonces publiées sur notre site <?= $appName ?></h2>
             <div class="row">
               <?php 
@@ -67,22 +75,24 @@
               }
               foreach($req as $article){ 
               ?>
-              <div class="col-lg-4 col-md-6 col-xs-12" style="padding: 10px;">
-                <div class="card mb-3" style="max-width: 540px;">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                        <img src="./uploads/<?= $article->image ?>" class="img-fluid rounded-start" alt="...">
-                        </div>
-                        <div class="col-md-8">
-                        <div class="card-body">
-                          <h5 class="card-title"><?= $article->name ?></h5>
-                          <p class="card-text"><?= substr($article->description,0, 20) ?>...</p>
-                          <a href="./product-<?= $article->id ?>" class="btn btn-primary">Voir +</a>
-                        </div>
-                        </div>
-                    </div>
+              <center>
+                <div class="col-lg-6 col-md-6 col-xs-12" style="padding: 10px; margin-left: auto; margin-right: auto;">
+                  <div class="card mb-3" style="max-width: 540px;">
+                      <div class="row g-0">
+                          <div class="col-md-4">
+                          <img src="./uploads/<?= $article->image ?>" class="img-fluid rounded-start" alt="...">
+                          </div>
+                          <div class="col-md-8">
+                          <div class="card-body">
+                            <h5 class="card-title"><?= $article->name ?></h5>
+                            <p class="card-text"><?= substr($article->description,0, 20) ?>...</p>
+                            <a href="./product-<?= $article->id ?>" class="btn btn-primary">Voir +</a>
+                          </div>
+                          </div>
+                      </div>
+                  </div>
                 </div>
-              </div>
+              </center>
               <?php } ?>
             </div>
           </div>

@@ -97,13 +97,13 @@ $prenom = 'etienne';
                                     <div class="card mb-3" style="max-width: 540px;">
                                         <div class="row g-0">
                                             <div class="col-md-4">
-                                            <img src="../uploads/<?= $req->image ?>" class="img-fluid rounded-start" alt="...">
+                                                <img src="../uploads/<?= $req->image ?>" class="img-fluid rounded-start" alt="...">
                                             </div>
                                             <div class="col-md-8">
                                             <div class="card-body">
                                             <h5 class="card-title"><?= $req->name ?></h5>
                                             <p class="card-text"><?= substr($req->description,0, 20) ?>...</p>
-                                            <a href="./product-<?= $req->id ?>" class="btn btn-primary">Voir +</a>
+                                            <a href="../product-<?= $req->id ?>" class="btn btn-primary">Voir +</a>
                                             </div>
                                             </div>
                                         </div>

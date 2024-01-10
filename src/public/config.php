@@ -6,6 +6,7 @@ session_start();
 
 require './class/database.php';
 require './class/user.php';
+require './class/annonce.php';
 
 //Connection à la bdd
 
