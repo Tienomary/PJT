@@ -15,6 +15,8 @@ class Annonce{
     public $hourofcreation;
     public $tagname;
 
+    public $tagid;
+
 
     public function __construct($id, $bdd){
         $this->id = $id;
@@ -28,6 +30,19 @@ class Annonce{
         $this->dateofcreation = $this->getAnnonceDateofcreation();
         $this->hourofcreation = $this->getAnnonceHoursfcreation();
         $this->tagname = $this->getAnnonceTagName();
+
+        $this->tagid = $this->getAnnonceTagId();
+    }
+    /**
+     * update l'info de l'annonce
+     */
+    public function updateAnnonceInformation($column, $value){
+        $req = $this->bdd->queryExec("UPDATE articles SET $column = ? WHERE id = ?", array($value,$this->id));
+        if($req){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public function getAnnonceName(){
@@ -71,9 +86,19 @@ class Annonce{
         return $this->bdd->queryReturn('SELECT * FROM tags WHERE id = ?', array($tagid))[0]->name;
     }
 
+    public function getAnnonceTagId(){
+        $req = $this->bdd->queryReturn("SELECT * FROM articles WHERE id = ?", array($this->id));
+        return $req[0]->tagid;
+    }
+
     public function getCreatorCodePostal(){
         $user = new user($this->posterid, $this->bdd);
         return $user->getUserCodePostal();
+    }
+
+    public function deleteMyAnnonce(){
+        $this->bdd->queryExec("DELETE FROM articles WHERE id = ?", array($this->id));
+        return true;
     }
 
 

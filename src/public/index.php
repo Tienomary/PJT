@@ -16,6 +16,8 @@ $router->map('POST', '/connexion', 'connexion');
 $router->map('POST', '/inscription', 'inscription');
 $router->map('POST', '/profilupdate', 'profilupdate');
 $router->map('POST', '/createtheproduct', 'createtheproduct');
+$router->map('POST', '/updatetheproduct', 'updatetheproduct');
+
 
 $match = $router->match();
 
@@ -162,6 +164,40 @@ switch ($match['target']){
         }else{
             header('Location: ./espacemembre/createproduct?e=Veuillez mettre une image à votre annonce.');
         }
+        break;
+    case 'updatetheproduct':
+        $var = $_POST;
+        $id=$_GET['id'];
+        $annonce = new pjt\annonce($id, $bdd);
+
+        if(isset($var['titre']) && !empty($var['titre'])){
+            if($var['titre'] != $annonce->nom){
+                $var['titre'] = htmlspecialchars($var['titre']);
+                $annonce->updateAnnonceInformation('name', $var['titre']);
+            }
+        }
+
+        if(isset($var['price']) && !empty($var['price'])){
+            if($var['price'] != $annonce->prix){
+                $var['price'] = htmlspecialchars($var['price']);
+                $annonce->updateAnnonceInformation('price', $var['price']);
+            }
+        }
+
+        if(isset($var['description']) && !empty($var['description'])){
+            if($var['description'] != $annonce->description){
+                $var['description'] = htmlspecialchars($var['description']);
+                $annonce->updateAnnonceInformation('description', $var['description']);
+            }
+        }
+
+        if(isset($var['tag']) && !empty($var['tag'])){
+            if($var['tag'] != $annonce->tagid){
+                $var['tag'] = htmlspecialchars($var['tag']);
+                $annonce->updateAnnonceInformation('tagid', $var['tag']);
+            }
+        }
+        header('Location: ./product-'.$id.'?s=Votre annonce à bien été modifiée');
         break;
     default: 
         require "./{$match['target']}.php";
