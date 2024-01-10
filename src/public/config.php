@@ -18,6 +18,6 @@ $db_pass = 'root';
 $bdd = new pjt\database($db_table,$db_user,$db_pass,$db_host);
 
 //global VAR 
-$appName = 'LocalRent';
+$appName = 'LocalRent ♻️';
 
 ?>

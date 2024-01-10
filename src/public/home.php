@@ -12,6 +12,7 @@
   <body>
   <style>
     body {
+      scroll-behavior: smooth;
       font-family: 'Roboto', sans-serif;
     }
     .myheader{
@@ -31,6 +32,7 @@
     }
     .mypresentation{
       padding-top: 60px;
+      padding-bottom: 60px;
     }
     .divider{
       border-bottom: 1px solid black;
@@ -39,9 +41,15 @@
       margin: 0;
       padding: 0;
     }
+    .annonces{
+      width: 100%;
+      padding-top: 40px;
+      padding-bottom: 40px;
+      background: linear-gradient(#fff, rgb(159, 209, 99), rgb(129,188,59));
+    }
   </style>
   <div class="myheader">
-    <nav class="navbar navbar-expand-lg bg-transparent-tertiary text-white" style="color: white;">
+    <nav class="navbar navbar-expand-lg bg-transparent-tertiary text-white " style="color: white;">
       <div class="container-fluid">
         <a class="navbar-brand" href="/"  style="color: white;"><?= $appName ?></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,9 +58,13 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#"  style="color: white;">Home</a>
+              <a class="nav-link active" aria-current="page" href="#"  style="color: white;">Accueil</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#annonces"  style="color: white;">Annonces</a>
             </li>
           </ul>
+          <a class="btn btn-primary" href="./espacemembre">Profil</a>
         </div>
       </div>
     </nav>
@@ -65,12 +77,60 @@
     <div class="container">
       <div class="row">
         <div class="col-md-3 col-xs-12">
-          <img src="./logo.jpeg" width="80%">
+          <img src="./logo.png" width="80%">
         </div>
-        <div class="col-md-9 col-xs-12">
+        <div class="col-md-9 col-xs-12"><br>
           <h2 style="margin: 0; padding: 0;">Notre histoire : </h2> 
-          <p style="font-size: 17px; text-align: justify; margin-top: 10px;">Bienvenue sur LocalRent - la plateforme de location entre particuliers qui allie praticité, économie et respect de l'environnement. Louez des objets de qualité directement auprès de votre communauté, réduisez votre empreinte carbone et contribuez à un mode de vie plus durable. Découvrez le pouvoir du partage sur LocalRent - louez intelligemment, vivez durablement.</p>
+          <p style="font-size: 20px; text-align: justify; margin-top: 10px;">Bienvenue sur LocalRent - la plateforme de location entre particuliers qui allie praticité, économie et respect de l'environnement. Louez des objets de qualité directement auprès de votre communauté, réduisez votre empreinte carbone et contribuez à un mode de vie plus durable. Découvrez le pouvoir du partage sur LocalRent - louez intelligemment, vivez durablement.</p>
         </div>
+      </div>
+    </div>
+  </div>
+  <div class="annonces" id="annonces">
+    <div class="container"><br>
+      <h2 style="color: black;">Regardez les dernières annonces publiées : </h2>
+      <?php 
+      if(isset($_GET['tags'])){
+      ?>
+      <a class="badge text-bg-danger" href="./#annonces" style="text-decoration: none;">Supprimer le tag</a>
+      <?php
+      }
+      foreach($bdd->queryReturn('SELECT * FROM tags') as $tag){
+        if(isset($_GET['tags']) && $_GET['tags'] == $tag->id){
+        
+        }else{
+      ?>
+        <a class="badge text-bg-primary" href="./?tags=<?= $tag->id ?>#annonces" style="text-decoration: none">
+          <?= $tag->name ?>
+        </a>
+      <?php } } ?>
+      <div class="row">
+        <?php 
+        if(isset($_GET['tags'])){
+          $req = $bdd->queryReturn('SELECT * FROM articles WHERE tagid = ?', array($_GET['tags']));
+        }else{
+          $req = $bdd->queryReturn('SELECT * FROM articles');
+        }
+        foreach($req as $article){ 
+        ?>
+        <div class="col-lg-7 col-md-7 col-xs-12" style="padding: 10px; margin-left: auto; margin-right: auto; ">
+          
+          <div class="card mb-3" style="max-width: 540px; background-color: rgba(255, 255, 255, 0.127); border: 0px; box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.2); margin-left: auto; margin-right: auto;">
+              <div class="row g-0">
+                  <div class="col-md-4">
+                  <img src="./uploads/<?= $article->image ?>" class="img-fluid rounded-start" alt="..." width="100%">
+                  </div>
+                  <div class="col-md-8">
+                  <div class="card-body"  style="background-color: transparent;">
+                    <h5 class="card-title"><?= $article->name ?></h5>
+                    <p class="card-text"><?= substr($article->description,0, 50) ?>...</p>
+                    <a href="./product-<?= $article->id ?>" class="btn btn-primary">Voir +</a>
+                  </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+        <?php } ?>
       </div>
     </div>
   </div>
