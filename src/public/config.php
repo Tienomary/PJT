@@ -16,7 +16,8 @@ $db_user = 'root';
 $db_pass = 'root';
 
 $bdd = new pjt\database($db_table,$db_user,$db_pass,$db_host);
-if($bdd){
+
+if($bdd->verifyIfBddExists()){
     echo('ok');
 }else{
     echo('nom');
