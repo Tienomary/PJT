@@ -107,7 +107,7 @@ switch ($match['target']){
             $req = $bdd->queryCount("SELECT * FROM users WHERE email = ?", array($mail));
             if($req == 0){  
                 $bdd->queryExec("INSERT INTO users(firstname, lastname, email, password, codepostal, phonenumber) VALUES (?,?,?,?,?,?)",array($prenom, $nom, $mail, $pwd, $codepostal,$phonenumber));
-                header('Location: ./espacemembre?s=Votre compte a bien été créée.');
+                header('Location: ./espacemembre/?s=Votre compte a bien été créée.');
             }else{
                 header('Location: ./espacemembre/inscription?e=Cette adresse email est déjà utilisée.');
             }
@@ -156,7 +156,7 @@ switch ($match['target']){
                     }
                     if(isset($price) && isset($titre) && isset($description) && isset($tag)){
                         $bdd->queryExec("INSERT INTO articles(name, description, image, posterid, price, datetime, tagid) VALUES (?,?,?,?,?,NOW(),?)", array($titre,$description,$name,$_SESSION['id'],$price,$tag));
-                        header('Location: ./espacemembre?s=Annonce mise en ligne !');
+                        header('Location: ./espacemembre/?s=Annonce mise en ligne !');
                     }else{
                         header('Location: ./espacemembre/createproduct?e=Veuillez remplir tous les champs du formulaire.');
                     }

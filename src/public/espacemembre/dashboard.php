@@ -158,7 +158,7 @@ $prenom = 'etienne';
                                                     echo $reservation[$i].' <a class="badge rounded-pill text-bg-danger" href="./?unbooked='.$reservationid.'">Annuler</a><br>';
                                                 }
                                                 ?>
-                                                <u>Total de : <?php echo($annonce->prix * sizeof($reservation)-1); ?>€</u>
+                                                <u>Total de : <?php echo($annonce->prix * (sizeof($reservation)-1)); ?>€</u>
                                             </p>
                                             <a href="../product-<?= $annonce->id ?>" class="btn btn-primary">Voir l'article</a>
                                             </div>

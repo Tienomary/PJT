@@ -91,7 +91,7 @@
                                 <textarea class="form-control" id="descriptionInput" rows="6" placeholder="Décrivez votre annonce ici" name="description"></textarea>
                             </div>
                             <select class="form-select" aria-label="Default select example" name="tag">
-                                <option selected>Choisissez un mot clé</option>
+                                <option value="0" selected>Choisissez un mot clé</option>
                                 <?php
                                 foreach($bdd->queryReturn('SELECT * FROM tags') as $tag){
                                 ?>

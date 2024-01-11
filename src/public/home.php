@@ -64,7 +64,7 @@
               <a class="nav-link active" aria-current="page" href="#annonces"  style="color: white;">Annonces</a>
             </li>
           </ul>
-          <a class="btn btn-primary" href="./espacemembre">Profil</a>
+          <a class="btn btn-primary" href="./espacemembre/">Profil</a>
         </div>
       </div>
     </nav>

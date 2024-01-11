@@ -72,6 +72,7 @@ if(isset($match['params']['id'])){
       if(!isset($_GET['book'])){
         if(isset($_SESSION['id']) && $annonce->posterid == $_SESSION['id']){ //je suis sur mon annonce
           if(isset($_GET['del'])){
+            $delresr = $bdd->queryExec("DELETE FROM reservations WHERE idarticle = ?", array($id));
             $annonce->deleteMyAnnonce();
             header('Location: ./espacemembre/?s=Votre annonce a bien été supprimée !');
           }
@@ -129,6 +130,43 @@ if(isset($match['params']['id'])){
                 <div class="card-body">
                   <!-- reservations -->
                   <h2 class="text-center">Les réservations</h2>
+                  <div class="row">
+                  <?php
+                  $reqs = $bdd->queryReturn("SELECT * FROM reservations WHERE idarticle = ? ORDER BY date", array($id));$reservations = array();
+                  foreach($reqs as $req){
+                      if(!empty($reservations[$req->iduser])){
+                          $reservations[$req->iduser][sizeof($reservations[$req->iduser])] = $req->date;
+                      }else{
+                          $reservations[$req->iduser] = array($req->iduser,$req->date);
+                      }
+                  }
+                  foreach($reservations as $reservation){
+                    $userinfo = new pjt\user($reservation[0], $bdd);
+                    ?>
+                    <div class="col-xs-12 col-md-6">
+                      <div class="card mb-3" style="max-width: 540px;">
+                          <div class="row g-0">
+                              <div class="col-md-8">
+                              <div class="card-body">
+                              <h5 class="card-title"><?= $userinfo->getUserFirstName() ?> <span class="badge bg-secondary"><?= $userinfo->getUserPhoneNumber() ?></span></h5>
+                              <p>
+                                  <?php 
+                                  for($i = 1; $i < sizeof($reservation); $i++){
+
+                                      echo $reservation[$i].'<br>';
+                                  }
+                                  ?>
+                                  <u>Total de : <?php echo($annonce->prix * (sizeof($reservation)-1)); ?>€</u>
+                              </p>
+                              </div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                    <?php
+                  }
+                  ?>
+                  </div>
                 </div>
               </div>
             </div>
