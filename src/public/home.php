@@ -89,6 +89,21 @@
   <div class="annonces" id="annonces">
     <div class="container"><br>
       <h2 style="color: black;">Regardez les dernières annonces publiées : </h2>
+      <div class="row">
+        <div class="col-lg-7 col-xs-12">
+          <form class="d-flex" role="search" style="width: 100%;" method="GET">
+            <input  type="search" placeholder="Recherchez un nom d'objet" style="padding: 5px; margin-right: 5px; background-color: transparent; color: black; border: 1px solid rgb(13, 110, 253); border-radius: 10px;" name="search" <?php if(isset($_GET['search'])): echo('value="'.$_GET['search'].'"'); endif; ?> required>
+            <button class="btn btn-outline-success" type="submit">Rechercher !</button>
+            <?php 
+            if(isset($_GET['search'])):
+            ?>
+            <a class="btn btn-outline-danger" style="margin-left: 5px;" href="./#annonces">Annuler</a>
+            <?php
+            endif;
+            ?>
+          </form>
+        </div>
+      </div>
       <?php 
       if(isset($_GET['tags'])){
       ?>
@@ -110,6 +125,10 @@
           $req = $bdd->queryReturn('SELECT * FROM articles WHERE tagid = ?', array($_GET['tags']));
         }else{
           $req = $bdd->queryReturn('SELECT * FROM articles');
+        }
+        if(isset($_GET['search'])){
+          $search = $_GET['search'];
+          $req = $bdd->queryReturn("SELECT * FROM articles WHERE description LIKE '%$search%'");
         }
         foreach($req as $article){ 
         ?>
