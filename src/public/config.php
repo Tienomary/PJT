@@ -10,7 +10,7 @@ require './class/annonce.php';
 
 //Connection à la bdd
 
-$db_table = 'pjt';
+$db_table = 'pjto';
 $db_host = 'db';
 $db_user = 'root';
 $db_pass = 'root';
@@ -42,12 +42,21 @@ try {
         
         $sql = "CREATE DATABASE $db_table";
         $dbco->exec($sql);
-        $dbco->query(file_get_contents('./pjt.sql'));
+
+        $sql = file_get_contents('./pjt.sql');
+
+        $dbco->query($sql);
         echo "La BDD vient d’être créé, rechargez la page !";
     } 
 } catch (Exception $e) {
     echo $e->getMessage();
 }
+
+$dbco = new PDO("mysql:host=$db_host", $db_user, $db_pass);
+$dbco->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$sql = file_get_contents('./pjt.sql');
+
+$dbco->query($sql);
 
 $bdd = new pjt\database($db_table,$db_user,$db_pass,$db_host);
 
