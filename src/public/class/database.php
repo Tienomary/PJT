@@ -16,25 +16,14 @@ class database{
         $this->db_host = $db_host;
         $this->db_pass = $db_pass;
     }
-
-    public function verifyIfBddExists(){
-        if($this->getPDO() != false){
-            return true;
-        }else{
-            return false;
-        }
-    }
+    
 
     private function getPDO(){
         if($this->pdo == null){
-            try{
-                $pdo = new PDO('mysql:dbname='.$this->db_name.';host='.$this->db_host.'', $this->db_user, $this->db_pass);
-                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $this->pdo=$pdo;
-                return $this->pdo;
-            } catch (Exception $e) {
-                return false;
-            }
+            $pdo = new PDO('mysql:dbname='.$this->db_name.';host='.$this->db_host.'', $this->db_user, $this->db_pass);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->pdo=$pdo;
+        
         }
         return $this->pdo;
     }
