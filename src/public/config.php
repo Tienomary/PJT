@@ -42,13 +42,12 @@ try {
         
         $sql = "CREATE DATABASE $db_table";
         $dbco->exec($sql);
-        system("cat pjt.sql | mysql --host=$db_host --user=$db_user --password=$db_pass $db_table");
+        $dbco->query(file_get_contents('./pjt.sql'));
         echo "La BDD vient d’être créé, rechargez la page !";
     } 
 } catch (Exception $e) {
     echo $e->getMessage();
 }
-
 
 $bdd = new pjt\database($db_table,$db_user,$db_pass,$db_host);
 
